@@ -267,6 +267,7 @@ const AdminDashboard = () => {
         <div className="flex-1 p-6">
           <Routes>
             <Route path="/"                  element={<Navigate to="/admin/overview" replace />} />
+            <Route path="/dashboard"         element={<Navigate to="/admin/overview" replace />} />
             <Route path="/overview"          element={<Overview />} />
             <Route path="/artists"           element={<ArtistManagement />} />
             <Route path="/courses"           element={<CourseManagement />} />
