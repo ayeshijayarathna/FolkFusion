@@ -1,11 +1,15 @@
-// Groq API — fast LLaMA3 inference for artist dashboard analytics
+// Groq API — fast LLaMA3 inference for artist & admin dashboard analytics
 const Groq = require('groq-sdk');
 
+const User            = require('../models/User');
 const Artist          = require('../models/Artist');
 const Artwork         = require('../models/Artwork');
 const Sale            = require('../models/Sale');
 const Inquiry         = require('../models/Inquiry');
 const MarketplaceItem = require('../models/MarketplaceItem');
+const Course          = require('../models/Course');
+const Event           = require('../models/Event');
+const Donation        = require('../models/Donation');
 
 // helper — build the data snapshot sent to Groq
 async function buildArtistSnapshot(artistId, userEmail) {
@@ -233,5 +237,197 @@ exports.getAiInsights = async (req, res) => {
       message: 'AI insights generation failed.',
       error:   error?.message,
     });
+  }
+};
+
+// admin AI insights 
+async function buildAdminSnapshot(province) {
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const artistUsers = await User.find({ role: 'artist', province }).select('_id isApproved isActive').lean();
+  const artistUserIds = artistUsers.map(u => u._id);
+
+  const [
+    artistStats,
+    salesStats,
+    courseStats,
+    eventStats,
+    inquiryStats,
+    donationStats,
+  ] = await Promise.all([
+    // artists
+    Artist.aggregate([
+      { $match: { user: { $in: artistUserIds } } },
+      { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'userDoc' } },
+      { $unwind: '$userDoc' },
+      { $group: {
+        _id:      null,
+        total:    { $sum: 1 },
+        approved: { $sum: { $cond: ['$userDoc.isApproved', 1, 0] } },
+        active:   { $sum: { $cond: ['$userDoc.isActive',   1, 0] } },
+      }},
+    ]),
+    // province sales last 6 months
+    Sale.aggregate([
+      { $match: { province, paymentStatus: 'completed', orderDate: { $gte: sixMonthsAgo } } },
+      { $group: {
+        _id:           null,
+        totalRevenue:  { $sum: '$totalAmount' },
+        totalSales:    { $sum: 1 },
+        totalQuantity: { $sum: '$quantity' },
+        avgOrderValue: { $avg: '$totalAmount' },
+      }},
+    ]),
+    // courses
+    Course.aggregate([
+      { $match: { province } },
+      { $group: {
+        _id:      null,
+        total:    { $sum: 1 },
+        active:   { $sum: { $cond: [{ $eq: ['$status', 'active']   }, 1, 0] } },
+        upcoming: { $sum: { $cond: [{ $eq: ['$status', 'upcoming'] }, 1, 0] } },
+        enrolled: { $sum: '$enrolledStudents' },
+      }},
+    ]),
+    // events
+    Event.aggregate([
+      { $match: { province } },
+      { $group: {
+        _id:      null,
+        total:    { $sum: 1 },
+        upcoming: { $sum: { $cond: [{ $eq: ['$status', 'upcoming'] }, 1, 0] } },
+        ongoing:  { $sum: { $cond: [{ $eq: ['$status', 'ongoing']  }, 1, 0] } },
+      }},
+    ]),
+    // inquiries
+    Inquiry.aggregate([
+      { $match: { province } },
+      { $group: { _id: '$status', count: { $sum: 1 } } },
+    ]),
+    // donations 
+    Donation.aggregate([
+      { $match: { paymentStatus: 'completed' } },
+      { $group: { _id: null, total: { $sum: 1 }, amount: { $sum: '$amount' } } },
+    ]),
+  ]);
+
+  const inqMap = {};
+  inquiryStats.forEach(i => { inqMap[i._id] = i.count; });
+
+  return {
+    province,
+    artists: {
+      total:    artistStats[0]?.total    || 0,
+      approved: artistStats[0]?.approved || 0,
+      active:   artistStats[0]?.active   || 0,
+      pending:  (artistStats[0]?.total || 0) - (artistStats[0]?.approved || 0),
+    },
+    sales: {
+      last6MonthsRevenue:  salesStats[0]?.totalRevenue  || 0,
+      last6MonthsOrders:   salesStats[0]?.totalSales    || 0,
+      last6MonthsQuantity: salesStats[0]?.totalQuantity || 0,
+      avgOrderValue:       Math.round(salesStats[0]?.avgOrderValue || 0),
+    },
+    courses: {
+      total:    courseStats[0]?.total    || 0,
+      active:   courseStats[0]?.active   || 0,
+      upcoming: courseStats[0]?.upcoming || 0,
+      enrolled: courseStats[0]?.enrolled || 0,
+    },
+    events: {
+      total:    eventStats[0]?.total    || 0,
+      upcoming: eventStats[0]?.upcoming || 0,
+      ongoing:  eventStats[0]?.ongoing  || 0,
+    },
+    inquiries: {
+      new:     inqMap.new     || 0,
+      read:    inqMap.read    || 0,
+      replied: inqMap.replied || 0,
+      closed:  inqMap.closed  || 0,
+    },
+    donations: {
+      total:  donationStats[0]?.total  || 0,
+      amount: donationStats[0]?.amount || 0,
+    },
+  };
+}
+
+function buildAdminPrompt(snapshot) {
+  return `You are an AI analytics assistant for FolkFusion, a Sri Lankan folk art heritage platform.
+Analyze the following provincial admin dashboard data for the ${snapshot.province} Province admin and provide concise, actionable insights.
+
+PROVINCE DATA SNAPSHOT:
+${JSON.stringify(snapshot, null, 2)}
+
+Respond ONLY with a valid JSON object (no markdown, no extra text):
+{
+  "summary": "2-3 sentence overall province performance summary",
+  "insights": [
+    {
+      "category": "Artists & Growth",
+      "status": "good" | "warning" | "neutral",
+      "title": "short insight title",
+      "detail": "1-2 sentence actionable insight"
+    },
+    {
+      "category": "Revenue & Sales",
+      "status": "good" | "warning" | "neutral",
+      "title": "short insight title",
+      "detail": "1-2 sentence actionable insight"
+    },
+    {
+      "category": "Events & Courses",
+      "status": "good" | "warning" | "neutral",
+      "title": "short insight title",
+      "detail": "1-2 sentence actionable insight"
+    },
+    {
+      "category": "Inquiries & Engagement",
+      "status": "good" | "warning" | "neutral",
+      "title": "short insight title",
+      "detail": "1-2 sentence actionable insight"
+    }
+  ],
+  "topRecommendation": "The single most impactful action this admin should take right now, in 1 sentence."
+}`;
+}
+
+// GET /api/admin/ai-insights
+exports.getAdminAiInsights = async (req, res) => {
+  try {
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(503).json({ success: false, message: 'GROQ_API_KEY is not configured.' });
+    }
+
+    const province = req.user.province;
+    if (!province) {
+      return res.status(400).json({ success: false, message: 'Admin province not set.' });
+    }
+
+    const snapshot = await buildAdminSnapshot(province);
+
+    const groq     = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const response = await groq.chat.completions.create({
+      model:       'llama-3.3-70b-versatile',
+      messages:    [{ role: 'user', content: buildAdminPrompt(snapshot) }],
+      temperature: 0.4,
+      max_tokens:  1024,
+      stream:      false,
+    });
+
+    const raw = response.choices[0]?.message?.content || '';
+    let insights;
+    try {
+      insights = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    } catch {
+      console.error('Admin Groq parse error. Raw:', raw);
+      return res.status(500).json({ success: false, message: 'Failed to parse AI response.' });
+    }
+
+    res.status(200).json({ success: true, generatedAt: new Date().toISOString(), data: insights });
+  } catch (error) {
+    console.error('Admin AI insights error:', error?.message || error);
+    res.status(500).json({ success: false, message: 'AI insights generation failed.', error: error?.message });
   }
 };

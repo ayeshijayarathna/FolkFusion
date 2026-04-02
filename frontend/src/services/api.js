@@ -95,6 +95,7 @@ export const adminAPI = {
   updateCourseStatus:   (id, data) => api.patch(`/admin/courses/${id}/status`, data),
   toggleCourseFeatured: (id)       => api.patch(`/admin/courses/${id}/featured`),
   getCourseStats:       ()         => api.get('/admin/courses/stats'),
+  getAiInsights:        ()         => api.get('/admin/ai-insights'),
   getFeaturedCourses:   ()         => api.get('/admin/courses/featured'),
 };
 
@@ -111,6 +112,7 @@ export const artistAPI = {
   updateProfileImage:     (formData) => api.put('/artists/me/profile-image', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
   create:                 (data)     => api.post('/artists', data),
   getStats:               ()         => api.get('/artists/admin/stats'),
+  getSpecializationStats: ()         => api.get('/artists/admin/specialization-stats'),
   getProvinceArtists:     (params)   => api.get('/artists/admin/province', { params }),
   getTopArtists:          (params)   => api.get('/artists/admin/top', { params }),
   approveArtist:          (id)       => api.put(`/artists/${id}/approve`),

@@ -36,9 +36,10 @@ router.put('/me/change-password', restrictTo('artist'), artistController.changeP
 router.use(restrictTo('admin'));
 
 // stats & province queries
-router.get('/admin/stats',            artistController.getStats);
-router.get('/admin/top',              artistController.getTopArtists);
-router.get('/admin/province',         artistController.getProvinceArtists);
+router.get('/admin/stats',                artistController.getStats);
+router.get('/admin/specialization-stats', artistController.getSpecializationStats);
+router.get('/admin/top',                  artistController.getTopArtists);
+router.get('/admin/province',             artistController.getProvinceArtists);
 
 // top artists ranked by total revenue - top 10
 router.get('/admin/top-by-revenue',   artistController.getTopArtistsByRevenue);

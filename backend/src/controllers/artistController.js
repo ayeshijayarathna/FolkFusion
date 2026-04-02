@@ -724,9 +724,26 @@ exports.clearAllFeatured = async (req, res) => {
 };
 
 
-// ─── GET ARTIST DASHBOARD OVERVIEW ───────────────────────────────────────────
-// Paste this function at the END of your existing artistController.js
-// Route: GET /artists/me/dashboard-overview
+//specialization stats
+exports.getSpecializationStats = async (req, res) => {
+  try {
+    const province = req.user.province;
+    const artistUsers = await User.find({ role: 'artist', province }).select('_id').lean();
+    const userIds     = artistUsers.map(u => u._id);
+    const stats = await Artist.aggregate([
+      { $match: { user: { $in: userIds } } },
+      { $unwind: { path: '$specialization', preserveNullAndEmptyArrays: false } },
+      { $group: { _id: '$specialization', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+    res.json({ success: true, data: stats, total: userIds.length });
+  } catch (error) {
+    console.error('Specialization stats error:', error);
+    res.status(500).json({ success: false, message: 'Error fetching specialization stats', error: error.message });
+  }
+};
+
+//get artist dashboard overview
 exports.getDashboardOverview = async (req, res) => {
   try {
     const Artist          = require('../models/Artist');

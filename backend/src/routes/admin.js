@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/adminController');
-const courseController = require('../controllers/courseController');
+const adminController      = require('../controllers/adminController');
+const courseController     = require('../controllers/courseController');
+const aiInsightsController = require('../controllers/aiInsightsController');
 const { protect, restrictTo } = require('../middleware/auth');
 const { uploadProfile, uploadMultiple } = require('../config/cloudinary');
 
@@ -21,6 +22,9 @@ router.put(
 router.put('/change-password', adminController.changePassword);
 
 router.get('/all-admins', adminController.getAllAdmins);
+
+// AI insights for admin dashboard
+router.get('/ai-insights', aiInsightsController.getAdminAiInsights);
 
 // course management routes
 router.get('/courses/stats', courseController.getCourseStats);
