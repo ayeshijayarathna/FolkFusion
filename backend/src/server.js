@@ -58,16 +58,16 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// stripe webhook (must be before body parsers)
+// stripe webhook
 app.post(
   '/api/payments/webhook',
   express.raw({ type: 'application/json' }),
   require('./controllers/paymentController').handleWebhook
 );
 
-// body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// body parsers(limit increased to 50mb for base64 image uploads)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 if (process.env.NODE_ENV === 'development') {
   app.use((req, res, next) => {
@@ -86,7 +86,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// rotes
+// routes
 app.use('/api/auth',               require('./routes/auth'));
 app.use('/api/admin',              require('./routes/admin'));
 app.use('/api/donations',          require('./routes/donations'));
@@ -100,11 +100,8 @@ app.use('/api/historical-places',  require('./routes/Historicalplaces'));
 app.use('/api/inquiries',          require('./routes/inquiryRoutes'));
 app.use('/api/payments',           require('./routes/payments'));
 app.use('/api/notifications',      require('./routes/notifications'));
-app.use('/api/learning', require('./routes/learning'));
-
-// super admin routes 
+app.use('/api/learning',           require('./routes/learning'));
 app.use('/api/super-admin',        require('./routes/superAdmin'));
-
 
 // test protected route
 app.get('/api/test/protected', require('./middleware/auth').protect, (req, res) => {
@@ -131,6 +128,9 @@ app.use((req, res) => {
 // global error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ success: false, message: 'File too large. Maximum upload size is 50MB.' });
+  }
   if (err.name === 'ValidationError') {
     const errors = Object.values(err.errors).map((e) => e.message);
     return res.status(400).json({ success: false, message: 'Validation Error', errors });
@@ -166,6 +166,7 @@ server.listen(PORT, () => {
       Socket.IO:   Enabled 
       Stripe:      ${process.env.STRIPE_SECRET_KEY ? 'Configured' : 'Not configured'}
       CORS:        Enabled for port 5173 
+      Upload limit: 50MB (base64 images)
   `);
 });
 

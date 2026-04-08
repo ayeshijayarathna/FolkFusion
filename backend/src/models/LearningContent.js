@@ -2,24 +2,20 @@ const mongoose = require('mongoose');
 
 const chapterSchema = new mongoose.Schema({
   title:       { type: String, required: true },
-  content:     { type: String, default: '' },   
-  images:      [{ type: String }],              
+  content:     { type: String, default: '' },
+  images:      [{ type: String }],            
+  videoUrl:    { type: String, default: '' },  
   isPublished: { type: Boolean, default: false },
   order:       { type: Number, default: 0 },
 });
 
-/* main schema */
 const learningContentSchema = new mongoose.Schema(
   {
-    category:    {
-      type:     String,
-      required: true,
-      unique:   true,
-    },
+    category:    { type: String, required: true, unique: true },
     description: { type: String, default: '' },
-    coverImage:  { type: String, default: '' },
+    coverImage:  { type: String, default: '' },   
     isPublished: { type: Boolean, default: false },
-    chapters:    {
+    chapters: {
       type:    [chapterSchema],
       default: () => [
         { title: 'Introduction',          order: 0 },
@@ -34,12 +30,11 @@ const learningContentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/*traditional schema */
 const traditionalPatternSchema = new mongoose.Schema(
   {
     title:       { type: String, required: true },
     description: { type: String, default: '' },
-    image:       { type: String, default: '' },  // Cloudinary URL
+    image:       { type: String, default: '' },
     order:       { type: Number, default: 0 },
   },
   { timestamps: true }

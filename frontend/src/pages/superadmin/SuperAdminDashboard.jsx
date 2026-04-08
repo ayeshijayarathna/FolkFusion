@@ -20,8 +20,6 @@ const NAV = [
   { to: 'admins',    label: 'Admin Accounts',   Icon: RiShieldUserLine },
   { to: 'learning',  label: 'Learning Content', Icon: RiBookOpenLine   },
   { to: 'reviews',   label: 'Reviews',          Icon: RiStarLine       },
-  { to: 'pages',     label: 'Page Content',     Icon: RiFileLine       },
-  { to: 'inquiries', label: 'Inquiries',        Icon: RiMessage2Line   },
   { to: 'users',     label: 'Learning Users',   Icon: RiGroupLine      },
   { to: 'settings',  label: 'Settings',         Icon: RiSettings3Line  },
 ];

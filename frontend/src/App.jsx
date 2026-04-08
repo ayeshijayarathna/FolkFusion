@@ -38,6 +38,7 @@ import CheckoutModal          from './pages/public/Marketplace/CheckoutModal';
 import OrderTracking          from './pages/public/Marketplace/OrderTracking';
 import DonatePage             from './pages/public/Donation';
 import Categories             from './pages/public/Categories/Categories';
+import LearningPage           from './pages/public/Learning/LearningPage';
 
 //protected route component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -149,6 +150,7 @@ function AppContent() {
             <Route path="/courses"            element={<Courses />} />
             <Route path="/courses/:id"        element={<CourseDetail />} />
             <Route path="/donations"          element={<DonatePage />} />
+            <Route path="/learning" element={<LearningPage />} />
             <Route path="/learning"           element={<div style={{ paddingTop: 120, textAlign: 'center' }}><h1>Learning Page</h1><p>Coming Soon</p></div>} />
             <Route path="*"                   element={<div style={{ paddingTop: 120, textAlign: 'center' }}><h1>404 - Not Found</h1></div>} />
           </Routes>

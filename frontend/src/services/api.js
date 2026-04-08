@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// main API instance (artists/admins/public) 
+// Main API instance (artists / admins / public) 
 const api = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -43,7 +43,7 @@ api.interceptors.response.use(
   }
 );
 
-//super Admin API instance (separate token key)
+//Super Admin API instance 
 const superAdminAxios = axios.create({
   baseURL: `${API_URL}/super-admin`,
   headers: { 'Content-Type': 'application/json' },
@@ -70,7 +70,34 @@ superAdminAxios.interceptors.response.use(
   }
 );
 
-// auth
+// learning Super Admin helper 
+const learningAdminAxios = axios.create({
+  baseURL: API_URL,
+  headers: { 'Content-Type': 'application/json' },
+});
+
+learningAdminAxios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('superAdminToken');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+learningAdminAxios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('superAdminToken');
+      localStorage.removeItem('superAdminUser');
+      window.location.href = '/system/super-admin';
+    }
+    return Promise.reject(error);
+  }
+);
+
+//auth
 export const authAPI = {
   login:          (credentials) => api.post('/auth/login', credentials),
   getMe:          ()             => api.get('/auth/me'),
@@ -78,7 +105,7 @@ export const authAPI = {
   logout:         ()             => api.post('/auth/logout'),
 };
 
-// Admin API
+//Admin API 
 export const adminAPI = {
   getAllAdmins:        ()       => api.get('/admin/all-admins'),
   getMyProfile:       ()       => api.get('/admin/profile'),
@@ -99,7 +126,7 @@ export const adminAPI = {
   getFeaturedCourses:   ()         => api.get('/admin/courses/featured'),
 };
 
-// Aritist APIs
+//Artist APIs
 export const artistAPI = {
   getAll:          (params) => api.get('/artists', { params }),
   getById:         (id)     => api.get(`/artists/${id}`),
@@ -140,7 +167,7 @@ export const artworkAPI = {
   toggleFeatured:     (id)       => api.put(`/artworks/admin/${id}/toggle-featured`),
 };
 
-// Event APIs
+//Event APIs 
 export const eventAPI = {
   getAll:             (params)   => api.get('/events', { params }),
   getAllEvents:        (params)   => api.get('/events', { params }),
@@ -171,7 +198,7 @@ export const courseAPI = {
   getFeatured:    ()            => api.get('/courses/featured'),
 };
 
-// Donation APIs
+//Donation APIs
 export const donationAPI = {
   create:              (data)        => api.post('/donations', data),
   getById:             (id)          => api.get(`/donations/${id}`),
@@ -181,7 +208,7 @@ export const donationAPI = {
   acknowledge:         (id, data)    => api.put(`/donations/${id}/acknowledge`, data),
 };
 
-// Marketplace APIs
+//Marketplace APIs 
 export const marketplaceAPI = {
   getAll:               (params)           => api.get('/marketplace', { params }),
   getById:              (id)               => api.get(`/marketplace/${id}`),
@@ -202,7 +229,7 @@ export const marketplaceAPI = {
   trackOrder:           (orderId)          => api.get(`/marketplace/track/${orderId}`),
 };
 
-// News APIs
+//News APIs 
 export const newsAPI = {
   getAll:           (params)       => api.get('/news', { params }),
   getById:          (id)           => api.get(`/news/${id}`),
@@ -217,7 +244,7 @@ export const newsAPI = {
   toggleFeatured:   (id)           => api.put(`/news/${id}/toggle-featured`),
 };
 
-// Historical Places APIs
+//Historical Places APIs
 export const historicalPlacesAPI = {
   getAll:         (params)       => api.get('/historical-places', { params }),
   getById:        (id)           => api.get(`/historical-places/${id}`),
@@ -230,7 +257,7 @@ export const historicalPlacesAPI = {
   toggleFeatured: (id)           => api.patch(`/historical-places/${id}/featured`),
 };
 
-// Payment APIs
+//Payment APIs
 export const paymentAPI = {
   createIntent:  (data)   => api.post('/payments/create-intent', data),
   createOrder:   (data)   => api.post('/payments/create-order', data),
@@ -239,7 +266,7 @@ export const paymentAPI = {
   getStats:      ()       => api.get('/payments/admin/stats'),
 };
 
-// Inquiry APIs
+//Inquiry APIs 
 export const inquiryAPI = {
   create:              (data)     => api.post('/inquiries', data),
   getProvinceList:     ()         => api.get('/inquiries/province'),
@@ -263,7 +290,7 @@ export const notificationAPI = {
   clearAll:       ()       => api.delete('/notifications'),
 };
 
-// Super Admin APIs
+//Super Admin APIs
 export const superAdminAPI = {
   login:              (credentials) => superAdminAxios.post('/auth/login', credentials),
   getMe:              ()             => superAdminAxios.get('/auth/me'),
@@ -277,32 +304,34 @@ export const superAdminAPI = {
   deleteAdmin:        (id)           => superAdminAxios.delete(`/admins/${id}`),
 };
 
-// Learning APIs
 export const learningAPI = {
-  //Public
+  // Public
   getPublishedCategories: ()           => api.get('/learning/categories'),
   getCategoryContent:     (category)   => api.get(`/learning/categories/${encodeURIComponent(category)}`),
   getPublishedPatterns:   ()           => api.get('/learning/patterns'),
   registerUser:           (data)       => api.post('/learning/users/register', data),
+  getUserByEmail:         (email)      => api.get(`/learning/users/${encodeURIComponent(email)}`),
+  completeChapter:        (data)       => api.post('/learning/users/progress', data),
   submitReview:           (data)       => api.post('/learning/reviews', data),
-  getApprovedReviews:     ()           => api.get('/learning/reviews/approved'),
+  getApprovedReviews:     (category)   => api.get(`/learning/reviews/approved${category ? `?category=${encodeURIComponent(category)}` : ''}`),
  
-  // super Admin — content 
-  adminGetAll:            ()           => api.get('/learning/admin/all'),
-  adminUpdate:            (id, data)   => api.put(`/learning/admin/${id}`, data),
-  adminUpdateChapter:     (id, idx, d) => api.put(`/learning/admin/${id}/chapters/${idx}`, d),
-  adminTogglePublish:     (id)         => api.patch(`/learning/admin/${id}/publish`),
- 
-  //super Admin — patterns
-  adminGetPatterns:       ()           => api.get('/learning/admin/patterns'),
-  adminCreatePattern:     (data)       => api.post('/learning/admin/patterns', data),
-  adminUpdatePattern:     (id, data)   => api.put(`/learning/admin/patterns/${id}`, data),
-  adminDeletePattern:     (id)         => api.delete(`/learning/admin/patterns/${id}`),
- 
-  // super Admin — users & reviews 
-  adminGetUsers:          ()           => api.get('/learning/admin/users'),
-  adminGetReviews:        (status)     => api.get(`/learning/admin/reviews${status ? `?status=${status}` : ''}`),
-  adminUpdateReview:      (id, status) => api.patch(`/learning/admin/reviews/${id}`, { status }),
+  // Super Admin
+  adminGetAll:        ()           => learningAdminAxios.get('/learning/admin/all'),
+  adminCreateContent: (data)       => learningAdminAxios.post('/learning/admin/create', data),
+  adminUpdate:        (id, data)   => learningAdminAxios.put(`/learning/admin/${id}`, data),
+  adminUpdateMeta:    (id, data)   => learningAdminAxios.patch(`/learning/admin/${id}/meta`, data),  // NEW
+  adminUpdateChapter: (id, idx, d) => learningAdminAxios.put(`/learning/admin/${id}/chapters/${idx}`, d),
+  adminTogglePublish: (id)         => learningAdminAxios.patch(`/learning/admin/${id}/publish`),
+  adminDeleteContent: (id)         => learningAdminAxios.delete(`/learning/admin/${id}`),
+  adminGetPatterns:   ()           => learningAdminAxios.get('/learning/admin/patterns'),
+  adminCreatePattern: (data)       => learningAdminAxios.post('/learning/admin/patterns', data),
+  adminUpdatePattern: (id, data)   => learningAdminAxios.put(`/learning/admin/patterns/${id}`, data),
+  adminDeletePattern: (id)         => learningAdminAxios.delete(`/learning/admin/patterns/${id}`),
+  adminGetUsers:      ()           => learningAdminAxios.get('/learning/admin/users'),
+  adminGetReviews:    (status)     => learningAdminAxios.get(`/learning/admin/reviews${status ? `?status=${status}` : ''}`),
+  adminUpdateReview:  (id, status) => learningAdminAxios.patch(`/learning/admin/reviews/${id}`, { status }),
 };
+ 
+
 
 export default api;
