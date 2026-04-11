@@ -4,7 +4,7 @@ import {
   RiDashboardLine, RiShieldUserLine, RiSettings3Line,
   RiMenuLine, RiCloseLine, RiLogoutBoxRLine,
   RiArrowRightSLine, RiBookOpenLine, RiStarLine,
-  RiFileLine, RiMessage2Line, RiGroupLine,
+  RiGroupLine, RiBox3Line,
 } from 'react-icons/ri';
 import { useSuperAdminAuth } from '../../context/Superadminauthcontext';
 import Overview      from './sections/Overview';
@@ -13,7 +13,7 @@ import SASettings    from './sections/SASettings';
 import LearningContent from './sections/LearningContent';
 import Reviews         from './sections/Reviews';
 import LearningUsers   from './sections/LearningUsers';
-
+import ARArtworks      from './sections/ARArtworks';   // ← NEW
 
 const NAV = [
   { to: 'overview',  label: 'Overview',        Icon: RiDashboardLine  },
@@ -21,6 +21,7 @@ const NAV = [
   { to: 'learning',  label: 'Learning Content', Icon: RiBookOpenLine   },
   { to: 'reviews',   label: 'Reviews',          Icon: RiStarLine       },
   { to: 'users',     label: 'Learning Users',   Icon: RiGroupLine      },
+  { to: 'ar',        label: '3D Artworks',      Icon: RiBox3Line       }, // ← NEW
   { to: 'settings',  label: 'Settings',         Icon: RiSettings3Line  },
 ];
 
@@ -41,11 +42,9 @@ export default function SuperAdminDashboard() {
     <div className="flex min-h-screen bg-[#FAF7F2]" style={{ fontFamily: "'Libre Baskerville', serif" }}>
 
       {/* sidebar */}
-      <aside
-        className={`fixed top-0 left-0 h-screen bg-[#3D3530] flex flex-col z-50 shadow-2xl transition-all duration-300 overflow-hidden
-          ${open ? 'w-64' : 'w-0 lg:w-[72px]'}`}
-      >
-        {/* Brand */}
+      <aside className={`fixed top-0 left-0 h-screen bg-[#3D3530] flex flex-col z-50 shadow-2xl transition-all duration-300 overflow-hidden
+          ${open ? 'w-64' : 'w-0 lg:w-[72px]'}`}>
+
         <div className="flex items-center justify-between px-4 py-5 border-b border-white/10 flex-shrink-0 min-w-0">
           {open && (
             <div className="overflow-hidden">
@@ -55,20 +54,15 @@ export default function SuperAdminDashboard() {
               <p className="text-[10px] tracking-[.18em] text-[#C97B5A] mt-0.5">SUPER ADMIN</p>
             </div>
           )}
-          <button
-            onClick={() => setOpen(p => !p)}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0 ml-auto text-white"
-          >
-            {open ? <RiCloseLine size={18} /> : <RiMenuLine size={18} />}
+          <button onClick={() => setOpen(p => !p)}
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0 ml-auto text-white">
+            {open ? <RiCloseLine size={18}/> : <RiMenuLine size={18}/>}
           </button>
         </div>
 
-        {/* nav links */}
         <nav className="flex-1 py-3 overflow-y-auto px-2 space-y-0.5">
           {NAV.map(({ to, label, Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
+            <NavLink key={to} to={to}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200
                 border-l-[3px] whitespace-nowrap overflow-hidden
@@ -77,15 +71,13 @@ export default function SuperAdminDashboard() {
                   : 'text-white/55 hover:text-white hover:bg-white/10 border-transparent'
                 }
                 ${!open ? 'lg:justify-center' : ''}`
-              }
-            >
-              <Icon size={17} className="flex-shrink-0" />
+              }>
+              <Icon size={17} className="flex-shrink-0"/>
               {open && <span className="truncate">{label}</span>}
             </NavLink>
           ))}
         </nav>
 
-        {/* user strip */}
         {open && (
           <div className="border-t border-white/10 p-3 flex-shrink-0">
             <div className="flex items-center gap-3 bg-white/8 rounded-xl px-3 py-2 mb-3">
@@ -99,32 +91,27 @@ export default function SuperAdminDashboard() {
             </div>
             <button
               onClick={() => { logout(); navigate('/system/super-admin'); }}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[#C97B5A] border border-[#C97B5A]/30 hover:bg-[#C97B5A]/10 transition-all text-[12px] font-medium"
-            >
-              <RiLogoutBoxRLine size={14} />
-              Sign Out
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[#C97B5A] border border-[#C97B5A]/30 hover:bg-[#C97B5A]/10 transition-all text-[12px] font-medium">
+              <RiLogoutBoxRLine size={14}/> Sign Out
             </button>
           </div>
         )}
       </aside>
 
-      {/*main */}
+      {/* main */}
       <main className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${open ? 'ml-64' : 'ml-0 lg:ml-[72px]'}`}>
-
-        {/* header */}
         <header className="sticky top-0 z-40 bg-white border-b border-[#E8DDD5] shadow-sm flex-shrink-0">
           <div className="flex items-center justify-between px-6 py-[14px]">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => setOpen(p => !p)}
-                className="p-2 rounded-lg hover:bg-[#FAF7F2] transition-colors text-[#3D3530] lg:hidden"
-              >
-                <RiMenuLine size={20} />
+              <button onClick={() => setOpen(p => !p)}
+                className="p-2 rounded-lg hover:bg-[#FAF7F2] transition-colors text-[#3D3530] lg:hidden">
+                <RiMenuLine size={20}/>
               </button>
               <div className="flex items-center gap-2 text-[13px]">
                 <span className="text-[#9A8880]">Super Admin</span>
-                <RiArrowRightSLine size={14} className="text-[#9A8880]" />
-                <span className="text-[#3D3530] font-semibold" style={{ fontFamily: "'Cinzel Decorative', serif", fontSize: 13 }}>
+                <RiArrowRightSLine size={14} className="text-[#9A8880]"/>
+                <span className="text-[#3D3530] font-semibold"
+                  style={{ fontFamily: "'Cinzel Decorative', serif", fontSize: 13 }}>
                   {currentLabel}
                 </span>
               </div>
@@ -135,22 +122,22 @@ export default function SuperAdminDashboard() {
           </div>
         </header>
 
-        {/* page */}
         <div className="flex-1 p-6">
           <Routes>
-            <Route index element={<Navigate to="overview" replace />} />
+            <Route index          element={<Navigate to="overview" replace />} />
             <Route path="overview"  element={<Overview />} />
             <Route path="admins"    element={<AdminAccounts />} />
             <Route path="settings"  element={<SASettings />} />
             <Route path="learning"  element={<LearningContent />} />
             <Route path="reviews"   element={<Reviews />} />
             <Route path="users"     element={<LearningUsers />} />
+            <Route path="ar"        element={<ARArtworks />} />  {/* ← NEW */}
           </Routes>
         </div>
       </main>
 
       {open && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setOpen(false)} />
+        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setOpen(false)}/>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
-import { SuperAdminAuthProvider, useSuperAdminAuth } from './context/Superadminauthcontext'; // NEW
+import { SuperAdminAuthProvider, useSuperAdminAuth } from './context/Superadminauthcontext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
@@ -12,7 +12,6 @@ import AdminLogin  from './pages/Login/AdminLogin';
 import ArtistDashboard from './pages/artist/ArtistDashboard';
 import AdminDashboard  from './pages/admin/AdminDashboard';
 
-// super admin pages
 import SuperAdminLogin     from './pages/Login/SuperAdminLogin';
 import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
 
@@ -39,14 +38,15 @@ import OrderTracking          from './pages/public/Marketplace/OrderTracking';
 import DonatePage             from './pages/public/Donation';
 import Categories             from './pages/public/Categories/Categories';
 import LearningPage           from './pages/public/Learning/LearningPage';
+import ARViewer               from './pages/public/ARViewer/ARViewer';
 
-//protected route component
+/*protected route*/
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#FFF8E7' }}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C2581F]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C2581F]"/>
       </div>
     );
   }
@@ -55,13 +55,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-//protected route for super admin
+/*super admin protected route*/
 const SuperAdminProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useSuperAdminAuth();
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF7F2' }}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#C97B5A' }}></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#C97B5A' }}/>
       </div>
     );
   }
@@ -69,22 +69,39 @@ const SuperAdminProtectedRoute = ({ children }) => {
   return children;
 };
 
+/*conditional footer*/
 function ConditionalFooter() {
   const location = useLocation();
-  const isSuperAdmin = location.pathname.startsWith('/super-admin');
-  const isDashboard  = location.pathname.startsWith('/admin') || location.pathname.startsWith('/artist/dashboard');
-  const isLogin      = ['/login', '/system/admin-portal', '/system/super-admin'].includes(location.pathname);
-  if (isDashboard || isLogin || isSuperAdmin) return null;
+  const path = location.pathname;
+  const hide =
+    path.startsWith('/super-admin')      ||
+    path.startsWith('/admin')            ||
+    path.startsWith('/artist/dashboard') ||
+    path.startsWith('/ar-view')          ||
+    ['/login', '/system/admin-portal', '/system/super-admin'].includes(path);
+  if (hide) return null;
   return <Footer />;
 }
 
+/* ── Conditional Navbar ── */
 function ConditionalNavbar() {
   const location = useLocation();
-  const isSuperAdmin = location.pathname.startsWith('/super-admin');
-  const isDashboard  = location.pathname.startsWith('/admin') || location.pathname.startsWith('/artist/dashboard');
-  const isLogin      = ['/login', '/system/admin-portal', '/system/super-admin'].includes(location.pathname);
-  if (isDashboard || isLogin || isSuperAdmin) return null;
+  const path = location.pathname;
+  const hide =
+    path.startsWith('/super-admin')      ||
+    path.startsWith('/admin')            ||
+    path.startsWith('/artist/dashboard') ||
+    path.startsWith('/ar-view')          ||
+    ['/login', '/system/admin-portal', '/system/super-admin'].includes(path);
+  if (hide) return null;
   return <Navbar />;
+}
+
+/*Conditional Chatbot (hide on AR page)*/
+function ConditionalChatbot() {
+  const location = useLocation();
+  if (location.pathname.startsWith('/ar-view')) return null;
+  return <Chatbot />;
 }
 
 function AppContent() {
@@ -116,47 +133,45 @@ function AppContent() {
                 ? <Navigate to="/super-admin/dashboard" replace />
                 : <SuperAdminLogin />
             } />
-
-            {/* super admin dashboard */}
             <Route path="/super-admin/dashboard/*" element={
               <SuperAdminProtectedRoute>
                 <SuperAdminDashboard />
               </SuperAdminProtectedRoute>
             } />
 
-            {/* regular dashboards */}
+            {/* dashboards */}
             <Route path="/admin/*"            element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
             <Route path="/artist/dashboard/*" element={<ProtectedRoute allowedRoles={['artist']}><ArtistDashboard /></ProtectedRoute>} />
 
             {/* public pages */}
-            <Route path="/news"               element={<News />} />
-            <Route path="/news/:id"           element={<NewsDetail />} />
-            <Route path="/historical-places"  element={<HistoricalPlaces />} />
-            <Route path="/historical-places/:id" element={<HistoricalPlaceDetail />} />
-            <Route path="/events"             element={<Events />} />
-            <Route path="/events/:id"         element={<EventDetail />} />
-            <Route path="/artists"            element={<Artists />} />
-            <Route path="/artists/:id"        element={<ArtistDetail />} />
-            <Route path="/gallery"            element={<Gallery />} />
-            <Route path="/gallery/:id"        element={<ArtworkDetail />} />
-            <Route path="/categories"         element={<Categories />} />
-            <Route path="/partnership"        element={<Partnership />} />
-            <Route path="/privacy-policy"     element={<PrivacyPolicy />} />
-            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-            <Route path="/marketplace"        element={<Marketplace />} />
-            <Route path="/marketplace/checkout" element={<CheckoutModal />} />
-            <Route path="/track-order"        element={<OrderTracking />} />
-            <Route path="/track-order/:ref"   element={<OrderTracking />} />
-            <Route path="/courses"            element={<Courses />} />
-            <Route path="/courses/:id"        element={<CourseDetail />} />
-            <Route path="/donations"          element={<DonatePage />} />
-            <Route path="/learning" element={<LearningPage />} />
-            <Route path="/learning"           element={<div style={{ paddingTop: 120, textAlign: 'center' }}><h1>Learning Page</h1><p>Coming Soon</p></div>} />
-            <Route path="*"                   element={<div style={{ paddingTop: 120, textAlign: 'center' }}><h1>404 - Not Found</h1></div>} />
+            <Route path="/news"                    element={<News />} />
+            <Route path="/news/:id"                element={<NewsDetail />} />
+            <Route path="/historical-places"       element={<HistoricalPlaces />} />
+            <Route path="/historical-places/:id"   element={<HistoricalPlaceDetail />} />
+            <Route path="/events"                  element={<Events />} />
+            <Route path="/events/:id"              element={<EventDetail />} />
+            <Route path="/artists"                 element={<Artists />} />
+            <Route path="/artists/:id"             element={<ArtistDetail />} />
+            <Route path="/gallery"                 element={<Gallery />} />
+            <Route path="/gallery/:id"             element={<ArtworkDetail />} />
+            <Route path="/categories"              element={<Categories />} />
+            <Route path="/partnership"             element={<Partnership />} />
+            <Route path="/privacy-policy"          element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions"    element={<TermsAndConditions />} />
+            <Route path="/marketplace"             element={<Marketplace />} />
+            <Route path="/marketplace/checkout"    element={<CheckoutModal />} />
+            <Route path="/track-order"             element={<OrderTracking />} />
+            <Route path="/track-order/:ref"        element={<OrderTracking />} />
+            <Route path="/courses"                 element={<Courses />} />
+            <Route path="/courses/:id"             element={<CourseDetail />} />
+            <Route path="/donations"               element={<DonatePage />} />
+            <Route path="/learning"                element={<LearningPage />} />
+            <Route path="/ar-view/:id"             element={<ARViewer />} />
+            <Route path="*"                        element={<div style={{ paddingTop: 120, textAlign: 'center' }}><h1>404 - Not Found</h1></div>} />
           </Routes>
         </main>
         <ConditionalFooter />
-        <Chatbot />
+        <ConditionalChatbot />
       </div>
     </Router>
   );
@@ -165,7 +180,7 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <SuperAdminAuthProvider>   
+      <SuperAdminAuthProvider>
         <SocketProvider>
           <AppContent />
         </SocketProvider>

@@ -34,3 +34,10 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# ngrok
+ngrok.exe
+ngrok
+
+# GLB models
+backend/public/models/

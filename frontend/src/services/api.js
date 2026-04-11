@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-// Main API instance (artists / admins / public) 
+//main API instance (artists / admins / public) 
 const api = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -43,7 +43,7 @@ api.interceptors.response.use(
   }
 );
 
-//Super Admin API instance 
+// super admin API instance
 const superAdminAxios = axios.create({
   baseURL: `${API_URL}/super-admin`,
   headers: { 'Content-Type': 'application/json' },
@@ -70,7 +70,7 @@ superAdminAxios.interceptors.response.use(
   }
 );
 
-// learning Super Admin helper 
+// learning & AR Super Admin helper (base URL = /api, injects superAdminToken)
 const learningAdminAxios = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -105,7 +105,7 @@ export const authAPI = {
   logout:         ()             => api.post('/auth/logout'),
 };
 
-//Admin API 
+//admin API
 export const adminAPI = {
   getAllAdmins:        ()       => api.get('/admin/all-admins'),
   getMyProfile:       ()       => api.get('/admin/profile'),
@@ -126,7 +126,7 @@ export const adminAPI = {
   getFeaturedCourses:   ()         => api.get('/admin/courses/featured'),
 };
 
-//Artist APIs
+//artist APIs
 export const artistAPI = {
   getAll:          (params) => api.get('/artists', { params }),
   getById:         (id)     => api.get(`/artists/${id}`),
@@ -153,7 +153,7 @@ export const artistAPI = {
   getAiInsights:          ()         => api.get('/artists/me/ai-insights'),
 };
 
-//Artwork APIs
+//artwork APIs 
 export const artworkAPI = {
   getAll:             (params)   => api.get('/artworks', { params }),
   getById:            (id)       => api.get(`/artworks/${id}`),
@@ -167,7 +167,7 @@ export const artworkAPI = {
   toggleFeatured:     (id)       => api.put(`/artworks/admin/${id}/toggle-featured`),
 };
 
-//Event APIs 
+//event APIs 
 export const eventAPI = {
   getAll:             (params)   => api.get('/events', { params }),
   getAllEvents:        (params)   => api.get('/events', { params }),
@@ -185,7 +185,7 @@ export const eventAPI = {
   getEventStats:     ()       => api.get('/events/stats'),
 };
 
-// Course APIs
+//course APIs
 export const courseAPI = {
   getCourses:     (params)      => api.get(`/courses?${params}`),
   getCourseById:  (id)          => api.get(`/courses/${id}`),
@@ -198,7 +198,7 @@ export const courseAPI = {
   getFeatured:    ()            => api.get('/courses/featured'),
 };
 
-//Donation APIs
+//donation APIs
 export const donationAPI = {
   create:              (data)        => api.post('/donations', data),
   getById:             (id)          => api.get(`/donations/${id}`),
@@ -208,7 +208,7 @@ export const donationAPI = {
   acknowledge:         (id, data)    => api.put(`/donations/${id}/acknowledge`, data),
 };
 
-//Marketplace APIs 
+//marketplace APIs
 export const marketplaceAPI = {
   getAll:               (params)           => api.get('/marketplace', { params }),
   getById:              (id)               => api.get(`/marketplace/${id}`),
@@ -229,7 +229,7 @@ export const marketplaceAPI = {
   trackOrder:           (orderId)          => api.get(`/marketplace/track/${orderId}`),
 };
 
-//News APIs 
+//news APIs
 export const newsAPI = {
   getAll:           (params)       => api.get('/news', { params }),
   getById:          (id)           => api.get(`/news/${id}`),
@@ -244,7 +244,7 @@ export const newsAPI = {
   toggleFeatured:   (id)           => api.put(`/news/${id}/toggle-featured`),
 };
 
-//Historical Places APIs
+//historical places APIs 
 export const historicalPlacesAPI = {
   getAll:         (params)       => api.get('/historical-places', { params }),
   getById:        (id)           => api.get(`/historical-places/${id}`),
@@ -257,7 +257,7 @@ export const historicalPlacesAPI = {
   toggleFeatured: (id)           => api.patch(`/historical-places/${id}/featured`),
 };
 
-//Payment APIs
+//payment APIs
 export const paymentAPI = {
   createIntent:  (data)   => api.post('/payments/create-intent', data),
   createOrder:   (data)   => api.post('/payments/create-order', data),
@@ -266,7 +266,7 @@ export const paymentAPI = {
   getStats:      ()       => api.get('/payments/admin/stats'),
 };
 
-//Inquiry APIs 
+//inquiry APIs 
 export const inquiryAPI = {
   create:              (data)     => api.post('/inquiries', data),
   getProvinceList:     ()         => api.get('/inquiries/province'),
@@ -280,7 +280,7 @@ export const inquiryAPI = {
   deleteMyInquiry:     (id)       => api.delete(`/inquiries/my/${id}`),
 };
 
-// Notification APIs
+//notification APIs
 export const notificationAPI = {
   getAll:         (params) => api.get('/notifications', { params }),
   getUnreadCount: ()       => api.get('/notifications/unread-count'),
@@ -290,7 +290,7 @@ export const notificationAPI = {
   clearAll:       ()       => api.delete('/notifications'),
 };
 
-//Super Admin APIs
+//super admin APIs 
 export const superAdminAPI = {
   login:              (credentials) => superAdminAxios.post('/auth/login', credentials),
   getMe:              ()             => superAdminAxios.get('/auth/me'),
@@ -304,6 +304,7 @@ export const superAdminAPI = {
   deleteAdmin:        (id)           => superAdminAxios.delete(`/admins/${id}`),
 };
 
+//learning APIs 
 export const learningAPI = {
   // Public
   getPublishedCategories: ()           => api.get('/learning/categories'),
@@ -314,12 +315,12 @@ export const learningAPI = {
   completeChapter:        (data)       => api.post('/learning/users/progress', data),
   submitReview:           (data)       => api.post('/learning/reviews', data),
   getApprovedReviews:     (category)   => api.get(`/learning/reviews/approved${category ? `?category=${encodeURIComponent(category)}` : ''}`),
- 
+
   // Super Admin
   adminGetAll:        ()           => learningAdminAxios.get('/learning/admin/all'),
   adminCreateContent: (data)       => learningAdminAxios.post('/learning/admin/create', data),
   adminUpdate:        (id, data)   => learningAdminAxios.put(`/learning/admin/${id}`, data),
-  adminUpdateMeta:    (id, data)   => learningAdminAxios.patch(`/learning/admin/${id}/meta`, data),  // NEW
+  adminUpdateMeta:    (id, data)   => learningAdminAxios.patch(`/learning/admin/${id}/meta`, data),
   adminUpdateChapter: (id, idx, d) => learningAdminAxios.put(`/learning/admin/${id}/chapters/${idx}`, d),
   adminTogglePublish: (id)         => learningAdminAxios.patch(`/learning/admin/${id}/publish`),
   adminDeleteContent: (id)         => learningAdminAxios.delete(`/learning/admin/${id}`),
@@ -331,7 +332,21 @@ export const learningAPI = {
   adminGetReviews:    (status)     => learningAdminAxios.get(`/learning/admin/reviews${status ? `?status=${status}` : ''}`),
   adminUpdateReview:  (id, status) => learningAdminAxios.patch(`/learning/admin/reviews/${id}`, { status }),
 };
- 
 
+//AR artwork APIs 
+//uses learningAdminAxios for admin routes (superAdminToken, correct base URL)
+export const arArtworkAPI = {
+  // Public
+  getPublished: ()   => api.get('/ar-artworks'),
+  getById:      (id) => api.get(`/ar-artworks/${id}`),
+
+  // Super Admin
+  adminGetAll:  ()           => learningAdminAxios.get('/ar-artworks/admin/all'),
+  adminCreate:  (data)       => learningAdminAxios.post('/ar-artworks/admin/create', data),
+  adminUpdate:  (id, data)   => learningAdminAxios.put(`/ar-artworks/admin/${id}`, data),
+  adminToggle:  (id)         => learningAdminAxios.patch(`/ar-artworks/admin/${id}/publish`),
+  adminDelete:  (id)         => learningAdminAxios.delete(`/ar-artworks/admin/${id}`),
+  adminReorder: (items)      => learningAdminAxios.post('/ar-artworks/admin/reorder', { items }),
+};
 
 export default api;

@@ -3,6 +3,7 @@ const http       = require('http');
 const { Server } = require('socket.io');
 const dotenv     = require('dotenv');
 const cors       = require('cors');
+const path       = require('path');
 const connectDB  = require('./config/db');
 
 dotenv.config();
@@ -19,10 +20,19 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-// socket.IO setup
+// Socket.IO
 const io = new Server(server, {
   cors: {
-    origin:      allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (
+        origin.includes('.ngrok-free.dev') ||
+        origin.includes('.ngrok-free.app') ||
+        origin.includes('.ngrok.io') ||
+        allowedOrigins.indexOf(origin) !== -1
+      ) return callback(null, true);
+      callback(new Error('Not allowed by CORS'));
+    },
     methods:     ['GET', 'POST'],
     credentials: true,
   },
@@ -43,9 +53,17 @@ io.on('connection', (socket) => {
   });
 });
 
+// CORS — allow localhost & any ngrok URL
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
+    // Allow all ngrok URLs
+    if (
+      origin.includes('.ngrok-free.dev') ||
+      origin.includes('.ngrok-free.app') ||
+      origin.includes('.ngrok.io')
+    ) return callback(null, true);
+    // Allow local origins
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -58,14 +76,17 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// stripe webhook
+// Static files(serve GLB models)
+app.use('/models', express.static(path.join(__dirname, '../public/models')));
+
+// Stripe webhook (must be before body parsers)
 app.post(
   '/api/payments/webhook',
   express.raw({ type: 'application/json' }),
   require('./controllers/paymentController').handleWebhook
 );
 
-// body parsers(limit increased to 50mb for base64 image uploads)
+// Body parsers
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -76,7 +97,7 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// health check
+// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({
     success:     true,
@@ -86,7 +107,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// routes
+// Routes
 app.use('/api/auth',               require('./routes/auth'));
 app.use('/api/admin',              require('./routes/admin'));
 app.use('/api/donations',          require('./routes/donations'));
@@ -101,6 +122,7 @@ app.use('/api/inquiries',          require('./routes/inquiryRoutes'));
 app.use('/api/payments',           require('./routes/payments'));
 app.use('/api/notifications',      require('./routes/notifications'));
 app.use('/api/learning',           require('./routes/learning'));
+app.use('/api/ar-artworks',        require('./routes/arArtworkRoutes'));
 app.use('/api/super-admin',        require('./routes/superAdmin'));
 
 // test protected route
@@ -125,12 +147,11 @@ app.use((req, res) => {
   });
 });
 
-// global error handler
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  if (err.type === 'entity.too.large') {
+  console.error('Error:', err.message || err);
+  if (err.type === 'entity.too.large')
     return res.status(413).json({ success: false, message: 'File too large. Maximum upload size is 50MB.' });
-  }
   if (err.name === 'ValidationError') {
     const errors = Object.values(err.errors).map((e) => e.message);
     return res.status(400).json({ success: false, message: 'Validation Error', errors });
@@ -161,29 +182,44 @@ server.listen(PORT, () => {
       --------------------------------
       Server:      http://localhost:${PORT}
       Environment: ${process.env.NODE_ENV || 'development'}
-      Database:    Connected 
+      Database:    Connected
       Frontend:    http://localhost:5173
-      Socket.IO:   Enabled 
+      Socket.IO:   Enabled
       Stripe:      ${process.env.STRIPE_SECRET_KEY ? 'Configured' : 'Not configured'}
-      CORS:        Enabled for port 5173 
-      Upload limit: 50MB (base64 images)
+      CORS:        Localhost + ngrok URLs allowed
+      Upload:      50MB limit (images)
+      GLB Models:  Served from /public/models
   `);
 });
 
 process.on('unhandledRejection', (err) => {
-  if (err?.name === 'TimeoutError' || err?.http_code === 499 || err?.name === 'AbortError') {
-    console.log('Cloudinary timeout/upload error (non-fatal):', err.message);
+  const msg = err?.message || String(err) || '';
+  const isCloudinaryError =
+    err?.name === 'TimeoutError'        ||
+    err?.name === 'AbortError'          ||
+    err?.http_code === 499              ||
+    err?.http_code === 400              ||
+    msg.includes('File size too large') ||
+    msg.includes('Request Timeout')     ||
+    msg.includes('timeout')             ||
+    msg.includes('Upgrade your plan')   ||
+    msg.includes('cloudinary')          ||
+    (typeof err === 'object' && err?.http_code !== undefined);
+  if (isCloudinaryError) {
+    console.log('[Non-fatal] Cloudinary error (server continues):', msg.split('\n')[0]);
     return;
   }
   console.log('UNHANDLED REJECTION! Shutting down...');
-  console.log(err.name, err.message);
+  console.log(err?.name || 'Unknown', err?.message || err);
   server.close(() => { process.exit(1); });
 });
+
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! Shutting down...');
   console.log(err.name, err.message);
   process.exit(1);
 });
+
 process.on('SIGTERM', () => {
   console.log('SIGTERM received. Shutting down gracefully...');
   server.close(() => { console.log('Process terminated!'); });

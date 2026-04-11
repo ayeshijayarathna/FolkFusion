@@ -11,8 +11,8 @@ import { PROVINCES } from '../../utils/constants';
 /* join our jurney card */
 const JoinOurJourney = () => {
   const artists = [
-    '/images/p1.jpg', '/images/p2.jpg', '/images/p3.jpg', '/images/p4.jpg',
-    '/images/p5.jpg', '/images/p6.jpg', '/images/p7.jpg', '/images/p8.jpg',
+    '/images/p1.png', '/images/p2.png', '/images/p3.png', '/images/p4.png',
+    '/images/p5.png', '/images/p6.png', '/images/p7.png', '/images/p8.png',
   ];
   return (
     <section
@@ -468,7 +468,7 @@ const Home = () => {
               return (
                 <div
                   key={i}
-                  className="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl bg-[#FAF7F2] shadow-[0_4px_28px_rgba(61,53,48,0.08)]"
+                  className="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl bg-[#FFF8E1] shadow-[0_4px_28px_rgba(61,53,48,0.08)]"
                 >
                   <div className="relative overflow-hidden h-[220px]">
                     <img
