@@ -124,6 +124,7 @@ app.use('/api/notifications',      require('./routes/notifications'));
 app.use('/api/learning',           require('./routes/learning'));
 app.use('/api/ar-artworks',        require('./routes/arArtworkRoutes'));
 app.use('/api/super-admin',        require('./routes/superAdmin'));
+app.use('/api/chat',               require('./routes/chatRoutes'));
 
 // test protected route
 app.get('/api/test/protected', require('./middleware/auth').protect, (req, res) => {
