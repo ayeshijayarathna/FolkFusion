@@ -71,14 +71,14 @@ const ArtistLogin = () => {
           <div
             className="absolute inset-0 rounded-l-3xl overflow-hidden"
             style={{
-              backgroundImage: "url('/images/a2.jpg')",
+              backgroundImage: "url('/images/login Artist.jpg')",
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
           />
           <div
             className="absolute inset-0 rounded-l-3xl"
-            style={{ background: 'rgba(95,139,140,0.30)', backdropFilter: 'blur(2px)' }}
+            style={{ backdropFilter: 'blur(1px)' }}
           />
           <div
             className="absolute top-0 right-0 w-44 h-44 rounded-full pointer-events-none"
@@ -108,12 +108,12 @@ const ArtistLogin = () => {
           </div>
 
           <div className="absolute bottom-8 left-8 z-10">
-            <p className="text-white font-heading text-lg drop-shadow">FolkFusion</p>
-            <p className="text-white/60 text-[10px] tracking-widest uppercase mt-0.5">Artist Portal</p>
+            <p className="text-dark-brown font-heading text-lg drop-shadow">FolkFusion</p>
+            <p className="text-muted-clay text-[10px] tracking-widest uppercase mt-0.5">Artist Portal</p>
             <div className="flex gap-1.5 mt-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
-              <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
-              <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+              <span className="w-1.5 h-1.5 rounded-full bg-muted-clay/80" />
+              <span className="w-1.5 h-1.5 rounded-full bg-muted-clay/40" />
+              <span className="w-1.5 h-1.5 rounded-full bg-muted-clay/20" />
             </div>
           </div>
         </div>
@@ -155,7 +155,7 @@ const ArtistLogin = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5 w-full">
             <div>
-              <label className="block text-[11px] font-semibold text-white/80 mb-1.5 uppercase tracking-widest">
+              <label className="block text-[11px] font-semibold text-dark-brown/80 mb-1.5 uppercase tracking-widest">
                 Email
               </label>
               <div className="relative">
@@ -174,7 +174,7 @@ const ArtistLogin = () => {
 
             <div>
               <div className="flex justify-between items-center mb-1.5">
-                <label className="block text-[11px] font-semibold text-white/80 uppercase tracking-widest">
+                <label className="block text-[11px] font-semibold text-dark-brown/80 uppercase tracking-widest">
                   Password
                 </label>
                 <button type="button" className="text-xs text-[#C97B5A] hover:text-white transition-colors">
@@ -230,7 +230,7 @@ const ArtistLogin = () => {
             </button>
           </form>
 
-          <p className="text-center text-xs text-white/50 mt-6">
+          <p className="text-center text-xs text-dark-brown/50 mt-6">
             New artist?{' '}
             <span className="text-[#C97B5A] font-medium cursor-pointer hover:underline">
               Contact your provincial council to register.
