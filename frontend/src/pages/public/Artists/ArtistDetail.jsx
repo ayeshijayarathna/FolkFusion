@@ -148,14 +148,11 @@ const ArtistDetail = () => {
     setShowShareMenu(false);
   };
 
-  /* ── Loading ── */
+  /*loading */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4EDE4]">
-        <div className="flex flex-col items-center gap-4">
-          <LotusMotif className="w-16 h-8 text-[#A67C52] animate-pulse" />
-          <div className="w-10 h-10 border-2 border-[#A67C52]/30 border-t-[#A67C52] rounded-full animate-spin" />
-        </div>
+        <div className="w-10 h-10 border-2 border-[#A67C52]/30 border-t-[#A67C52] rounded-full animate-spin" />
       </div>
     );
   }
@@ -199,20 +196,8 @@ const ArtistDetail = () => {
           background: 'linear-gradient(160deg, #FBF5EC 0%, #F4EDE4 40%, #EDE0CE 100%)',
         }}
       >
-        <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%234A3F35'%3E%3Ccircle cx='60' cy='60' r='3'/%3E%3Ccircle cx='60' cy='60' r='18' fill='none' stroke='%234A3F35' stroke-width='1'/%3E%3Ccircle cx='60' cy='60' r='32' fill='none' stroke='%234A3F35' stroke-width='0.5'/%3E%3Cpath d='M60 28 L64 44 L60 40 L56 44Z' /%3E%3Cpath d='M60 92 L64 76 L60 80 L56 76Z' /%3E%3Cpath d='M28 60 L44 56 L40 60 L44 64Z' /%3E%3Cpath d='M92 60 L76 56 L80 60 L76 64Z' /%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '120px 120px',
-          }}
-        />
-
         {/* decorative top border line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/60 to-transparent" />
-
-        {/* Corner lotus motifs */}
-        <LotusMotif className="absolute top-8 left-8 w-20 h-10 text-[#A67C52]" />
-        <LotusMotif className="absolute top-8 right-8 w-20 h-10 text-[#A67C52] scale-x-[-1]" />
 
         <div className="relative max-w-6xl mx-auto px-6">
           {/* back button */}

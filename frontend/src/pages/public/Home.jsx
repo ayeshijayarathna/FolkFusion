@@ -6,7 +6,6 @@ import {
   Newspaper, Clock, Eye, MapPin, Phone, Mail, Send, CheckCircle,
 } from 'lucide-react';
 import { artworkAPI, artistAPI, newsAPI, inquiryAPI, marketplaceAPI } from '../../services/api';
-import { PROVINCES } from '../../utils/constants';
 
 /*-------------------------new arrival card----------------------------------------------------------------- */
 const NewArrivalCard = ({ item, index }) => {
@@ -385,11 +384,11 @@ const ContactFormSection = () => {
 
   /* hero images */
   const heroImgs = [
-    { src: '/images/Contact.jpg'},
+    { src: '/images/mural art.jpg'},
     { src: '/images/potterywork.jpg' },
-    { src: '/images/metalcraft.jpg' },
+    { src: '/images/aukana.jpg' },
     { src: '/images/folkjewl.jpg' },
-    { src: '/images/w.jpg' },
+    { src: '/images/srilanka fort.jpg' },
   ];
 
   const mapSrc = selectedProv
@@ -761,13 +760,22 @@ const Home = () => {
     try { const r = await newsAPI.getLatest({ limit: 5 }); if (r.data.success) setNewsData(r.data.data); }
     catch { setNewsData([]); } finally { setLoadingNews(false); }
   };
+
   const fetchHomeData = async () => {
     try {
-      const [a, b] = await Promise.all([artistAPI.getAll({ page: 1, limit: 1 }), artworkAPI.getAll({ page: 1, limit: 1 })]);
-      setStats({ totalArtists: a.data.total || 0, totalArtworks: b.data.total || 0, provinces: 9 });
+      const [a, b] = await Promise.all([
+        artistAPI.getAll({ page: 1, limit: 1 }),
+        artworkAPI.getAll({ page: 1, limit: 1 }),
+      ]);
+      setStats({
+        totalArtists:  a.data.total || a.data.data?.length || 0,
+        totalArtworks: b.data.total || b.data.data?.length || 0,
+        provinces: 9,
+      });
       try { const cr = await artworkAPI.getStatsByCategory(); setCategoryStats(cr.data.data || []); } catch {}
     } catch {} finally { setLoading(false); }
   };
+
   const getCategoryCount = name => { const s = categoryStats.find(s => s._id === name); return s ? s.count : 0; };
 
   const categories = [
@@ -848,11 +856,27 @@ const Home = () => {
                 Meet Artists
               </Link>
             </div>
+
+            {/*dynamic stats from API */}
             <div className="flex gap-9 mt-11 pt-7 border-t border-muted-clay/14">
-              <div><p className="text-[1.55rem] text-muted-clay">3+</p><p className="text-xs text-[#9A8A80] uppercase">Artists</p></div>
-              <div><p className="text-[1.55rem] text-muted-clay">5+</p><p className="text-xs text-[#9A8A80] uppercase">Artworks</p></div>
-              <div><p className="text-[1.55rem] text-muted-clay">9</p><p className="text-xs text-[#9A8A80] uppercase">Provinces</p></div>
+              <div>
+                <p className="text-[1.55rem] text-muted-clay">
+                  {stats.totalArtists > 0 ? `${stats.totalArtists}+` : '0'}
+                </p>
+                <p className="text-xs text-[#9A8A80] uppercase">Artists</p>
+              </div>
+              <div>
+                <p className="text-[1.55rem] text-muted-clay">
+                  {stats.totalArtworks > 0 ? `${stats.totalArtworks}+` : '0'}
+                </p>
+                <p className="text-xs text-[#9A8A80] uppercase">Artworks</p>
+              </div>
+              <div>
+                <p className="text-[1.55rem] text-muted-clay">{stats.provinces}</p>
+                <p className="text-xs text-[#9A8A80] uppercase">Provinces</p>
+              </div>
             </div>
+
           </div>
         </div>
       </section>
