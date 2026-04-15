@@ -85,13 +85,13 @@ const AdminLogin = () => {
             </div>
           </div>
 
-          <p className="text-[#C97B5A] text-[11px] font-semibold tracking-widest uppercase mb-1 text-center">
+          <p className="text-white text-[11px] font-semibold tracking-widest uppercase mb-1 text-center">
             Secure Access
           </p>
           <h1 className="text-[2.5rem] font-heading text-white mb-1 leading-tight drop-shadow-lg text-center">
             Admin Portal
           </h1>
-          <p className="text-white/50 text-xs mb-7 tracking-wide text-center">Provincial Administrator Access</p>
+          <p className="text-white text-xs mb-7 tracking-wide text-center">Provincial Administrator Access</p>
 
           {error && (
             <div className="w-full mb-5 px-4 py-3 bg-red-500/20 border border-red-300/40 rounded-xl text-white text-sm animate-fadeIn">
@@ -101,7 +101,7 @@ const AdminLogin = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5 w-full">
             <div>
-              <label className="block text-[11px] font-semibold text-white/80 mb-1.5 uppercase tracking-widest">
+              <label className="block text-[11px] font-semibold text-dark-brown mb-1.5 uppercase tracking-widest">
                 Admin Email
               </label>
               <div className="relative">
@@ -119,7 +119,7 @@ const AdminLogin = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-white/80 mb-1.5 uppercase tracking-widest">
+              <label className="block text-[11px] font-semibold text-dark-brown mb-1.5 uppercase tracking-widest">
                 Password
               </label>
               <div className="relative">
@@ -179,8 +179,8 @@ const AdminLogin = () => {
               border: '1px solid rgba(255,255,255,0.15)',
             }}
           >
-            <Shield size={13} className="text-white/50 shrink-0" />
-            <p className="text-[10px] text-white/50 tracking-wide">
+            <Shield size={13} className="text-dark-brown shrink-0" />
+            <p className="text-[10px] text-dark-brown tracking-wide">
               Authorized personnel only. All access is monitored.
             </p>
           </div>
