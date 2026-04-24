@@ -7,7 +7,7 @@ import {
 } from 'react-icons/ri';
 import { arArtworkAPI } from '../../../services/api';
 
-/*QR modal ── */
+/*QR modal */
 const QRModal = ({ url, title, onClose }) => {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}&bgcolor=FDF6EE&color=3D3530&margin=10`;
   const isLocalhost = url.includes('localhost') || url.includes('127.0.0.1');
@@ -93,7 +93,7 @@ export default function ARViewer() {
     setIsMobile(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
   }, []);
 
-  /* load model-viewer script */
+  /* load model viewer */
   useEffect(() => {
     const existing = document.querySelector('script[src*="model-viewer"]');
     if (existing) {
@@ -118,7 +118,7 @@ export default function ARViewer() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  /* GLB URL — uses window.location.origin so proxy works */
+  /* glb url-uses window.location.origin so proxy works */
   const getGlbUrl = (glbModel) => {
     if (!glbModel) return null;
     if (glbModel.startsWith('http')) return glbModel;
@@ -211,27 +211,85 @@ export default function ARViewer() {
                 </div>
               )}
 
-              {/* model-viewer */}
+              {/* model viewer with full controls( rotate, zoom, pan, shadows) */}
               {scriptReady && (
                 <model-viewer
                   src={glbUrl}
                   alt={art.title}
+
+                  /* AR settings */
                   ar=""
                   ar-modes="webxr scene-viewer quick-look"
+                  ar-scale="auto"
+
+                  /* Camera controls: rotate, zoom, pan */
                   camera-controls=""
+                  touch-action="pan-y"
+                  interaction-prompt="auto"
+                  interaction-prompt-threshold="2000"
+                  interaction-prompt-style="wiggle"
+
+                  /* Zoom limits (pinch-to-zoom on mobile, scroll on PC) */
+                  min-camera-orbit="auto auto 5%"
+                  max-camera-orbit="auto auto 300%"
+                  camera-orbit="0deg 75deg 105%"
+
+                  /* Field of view (fine-grained pinch zoom) */
+                  field-of-view="30deg"
+                  min-field-of-view="10deg"
+                  max-field-of-view="45deg"
+
+                  /* Auto-rotate (pauses when user interacts) */
                   auto-rotate=""
-                  auto-rotate-delay="300"
-                  rotation-per-second="20deg"
-                  shadow-intensity="1"
+                  auto-rotate-delay="3000"
+                  rotation-per-second="15deg"
+
+                  /* shadows(realistic ground shadow) */
+                  shadow-intensity="1.5"
+                  shadow-softness="0.8"
+
+                  /* lighting & exposure */
                   environment-image="neutral"
-                  exposure="1"
+                  exposure="1.1"
+                  tone-mapping="neutral"
+
+                  /* Loading */
+                  loading="eager"
+                  reveal="auto"
+
                   style={{
                     width: '100%', height: '100%',
                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
                     background: 'transparent',
                     '--progress-bar-color': '#C97B5A',
+                    '--poster-color': 'transparent',
                   }}
                 >
+                  {/* Custom poster while model loads */}
+                  <div slot="poster" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    width: '100%',
+                    background: 'transparent',
+                  }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{
+                        width: 48, height: 48, borderRadius: 12,
+                        background: 'rgba(201,123,90,0.12)',
+                        border: '1px solid rgba(201,123,90,0.25)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        margin: '0 auto 12px',
+                      }}>
+                        <RiBox3Line size={22} style={{ color: '#C97B5A' }}/>
+                      </div>
+                      <p style={{ color: '#C4917A', fontSize: 12, margin: 0 }}>
+                        Preparing 3D model…
+                      </p>
+                    </div>
+                  </div>
+
                   {/* AR button */}
                   <button slot="ar-button"
                     className="font-body font-semibold"
@@ -268,7 +326,7 @@ export default function ARViewer() {
               <div className="max-w-2xl mx-auto">
                 <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                   <h1 className="font-heading text-sm font-normal" style={{ color: "#F5EDE3" }}>{art.title}</h1>
-                  <div className="flex gap-4 text-[10px] font-body text-[#9A8880]">
+                  <div className="flex gap-4 text-[10px] font-body text-[#9A8880] flex-wrap">
                     <span className="flex items-center gap-1"><RiComputerLine size={11}/> Drag to rotate</span>
                     <span className="flex items-center gap-1"><RiSmartphoneLine size={11}/> Pinch to zoom</span>
                   </div>
@@ -295,7 +353,7 @@ export default function ARViewer() {
             </div>
           </>
         ) : (
-          /* No GLB fallback */
+          /* no glb  fallback */
           <div className="flex-1 flex flex-col items-center justify-center p-8">
             {art.image ? (
               <div className="max-w-md w-full text-center">
