@@ -267,7 +267,7 @@ export default function ARViewer() {
             <div className="flex-shrink-0 px-6 py-4 bg-[#1e1a17]/95 border-t border-[#C97B5A]/12">
               <div className="max-w-2xl mx-auto">
                 <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                  <h1 className="font-heading text-sm text-[#FDF6EE] font-normal">{art.title}</h1>
+                  <h1 className="font-heading text-sm font-normal" style={{ color: "#F5EDE3" }}>{art.title}</h1>
                   <div className="flex gap-4 text-[10px] font-body text-[#9A8880]">
                     <span className="flex items-center gap-1"><RiComputerLine size={11}/> Drag to rotate</span>
                     <span className="flex items-center gap-1"><RiSmartphoneLine size={11}/> Pinch to zoom</span>
