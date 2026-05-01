@@ -51,8 +51,6 @@ const QRModal = ({ url, title, onClose }) => {
         {/* steps */}
         <div className="text-left space-y-2 mb-4">
           {[
-            'Run: ngrok http 5173',
-            'Open ngrok URL in PC browser',
             'Scan QR with phone camera',
             'Tap "View in Your Room (AR)"',
           ].map((step, i) => (
