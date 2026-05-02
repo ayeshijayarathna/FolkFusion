@@ -76,17 +76,25 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, expectedRole) => {
     try {
       const response = await authAPI.login({ email, password });
       const { token, data } = response.data;
-      
-      // save token
-      localStorage.setItem('token', token);
-      
       const userData = data.user;
 
-      //fetch complete profile with profilePhoto after login
+      // role validation
+      if (expectedRole && userData.role !== expectedRole) {
+
+        return {
+          success: false,
+          error: expectedRole === 'artist'
+            ? 'These credentials are not for an artist account. Please use the admin portal instead.'
+            : 'These credentials are not for an admin account. Please use the artist login instead.'
+        };
+      }
+
+      localStorage.setItem('token', token);
+      
       let completeUserData = { ...userData };
 
       try {

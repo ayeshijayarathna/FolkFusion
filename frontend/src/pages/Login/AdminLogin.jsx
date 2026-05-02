@@ -18,13 +18,10 @@ const AdminLogin = () => {
     setError('');
     setLoading(true);
     try {
-      const result = await login(email, password);
+      // pass admin as expected role (artist credentials will be rejectcted)
+      const result = await login(email, password, 'admin');
       if (result.success) {
-        if (result.user.role === 'admin') {
-          navigate('/admin/dashboard');
-        } else {
-          setError('Access denied. Administrators only.');
-        }
+        navigate('/admin/dashboard');
       } else {
         setError(result.error);
       }

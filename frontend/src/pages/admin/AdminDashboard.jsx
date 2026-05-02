@@ -58,7 +58,11 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = () => { logout(); navigate('/system/admin-portal'); };
+  const handleLogout = async () => {
+    await logout();
+    navigate('/system/admin-portal', { replace: true });
+  };
+
   const handleBackToHome = () => { setIsProfileMenuOpen(false); navigate('/'); };
 
   const menuItems = [

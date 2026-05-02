@@ -40,9 +40,24 @@ import Categories             from './pages/public/Categories/Categories';
 import LearningPage           from './pages/public/Learning/LearningPage';
 import ARViewer               from './pages/public/ARViewer/ARViewer';
 
+/*Get correct dashboard path based on user role*/
+const getDashboardPath = (role) => {
+  if (role === 'admin') return '/admin/dashboard';
+  if (role === 'artist') return '/artist/dashboard';
+  return '/'; 
+};
+
+const getLoginPathForRoute = (pathname) => {
+  if (pathname.startsWith('/admin')) return '/system/admin-portal';
+  if (pathname.startsWith('/artist')) return '/login';
+  return '/login'; 
+};
+
 /*protected route*/
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
+  const location = useLocation();
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#FFF8E7' }}>
@@ -50,8 +65,15 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       </div>
     );
   }
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (allowedRoles && !allowedRoles.includes(user?.role)) return <Navigate to="/" replace />;
+
+  if (!isAuthenticated) {
+    return <Navigate to={getLoginPathForRoute(location.pathname)} replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    return <Navigate to={getDashboardPath(user?.role)} replace />;
+  }
+
   return children;
 };
 
@@ -105,7 +127,7 @@ function ConditionalChatbot() {
 }
 
 function AppContent() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   const { isAuthenticated: isSuperAdminAuth } = useSuperAdminAuth();
 
   return (
@@ -116,15 +138,23 @@ function AppContent() {
           <Routes>
             {/* public */}
             <Route path="/" element={<Home />} />
+
+            {/* artist login page*/}
             <Route path="/login" element={
-              isAuthenticated
-                ? <Navigate to={user?.role === 'artist' ? '/artist/dashboard' : '/admin/dashboard'} replace />
-                : <ArtistLogin />
+              loading
+                ? null
+                : isAuthenticated && user?.role
+                  ? <Navigate to={getDashboardPath(user.role)} replace />
+                  : <ArtistLogin />
             } />
+
+            {/* admin login pg*/}
             <Route path="/system/admin-portal" element={
-              isAuthenticated
-                ? <Navigate to={user?.role === 'admin' ? '/admin/dashboard' : '/artist/dashboard'} replace />
-                : <AdminLogin />
+              loading
+                ? null
+                : isAuthenticated && user?.role
+                  ? <Navigate to={getDashboardPath(user.role)} replace />
+                  : <AdminLogin />
             } />
 
             {/* super admin */}

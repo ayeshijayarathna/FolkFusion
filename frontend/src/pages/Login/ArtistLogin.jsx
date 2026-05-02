@@ -18,13 +18,10 @@ const ArtistLogin = () => {
     setError('');
     setLoading(true);
     try {
-      const result = await login(email, password);
+      // pass artist as expected role(admin credentials will be rejected)
+      const result = await login(email, password, 'artist');
       if (result.success) {
-        if (result.user.role === 'artist') {
-          navigate('/artist/dashboard');
-        } else {
-          setError('Invalid credentials. Artists only.');
-        }
+        navigate('/artist/dashboard');
       } else {
         setError(result.error);
       }
