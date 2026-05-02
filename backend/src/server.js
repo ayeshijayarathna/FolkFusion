@@ -76,8 +76,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Static files(serve GLB models)
-app.use('/models', express.static(path.join(__dirname, '../public/models')));
+app.use('/api/models', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static(path.join(__dirname, '../public/models')));
 
 // Stripe webhook (must be before body parsers)
 app.post(

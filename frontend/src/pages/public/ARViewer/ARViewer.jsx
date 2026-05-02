@@ -7,7 +7,7 @@ import {
 } from 'react-icons/ri';
 import { arArtworkAPI } from '../../../services/api';
 
-/*QR modal */
+/*QR modal*/
 const QRModal = ({ url, title, onClose }) => {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}&bgcolor=FDF6EE&color=3D3530&margin=10`;
   const isLocalhost = url.includes('localhost') || url.includes('127.0.0.1');
@@ -48,7 +48,6 @@ const QRModal = ({ url, title, onClose }) => {
         <p className="font-heading text-sm text-[#3D3530] mb-1">{title}</p>
         <p className="text-[10px] font-body break-all px-2 mb-4 text-[#C97B5A]">{url}</p>
 
-        {/* steps */}
         <div className="text-left space-y-2 mb-4">
           {[
             'Scan QR with phone camera',
@@ -91,7 +90,7 @@ export default function ARViewer() {
     setIsMobile(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
   }, []);
 
-  /* load model viewer */
+  /* load model viewer script */
   useEffect(() => {
     const existing = document.querySelector('script[src*="model-viewer"]');
     if (existing) {
@@ -116,11 +115,14 @@ export default function ARViewer() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  /* glb url-uses window.location.origin so proxy works */
+ 
   const getGlbUrl = (glbModel) => {
     if (!glbModel) return null;
     if (glbModel.startsWith('http')) return glbModel;
-    return `${window.location.origin}${glbModel}`;
+    const apiPath = glbModel.startsWith('/models/')
+      ? glbModel.replace('/models/', '/api/models/')
+      : glbModel;
+    return `${window.location.origin}${apiPath}?ngrok-skip-browser-warning=true`;
   };
 
   /*loading*/
@@ -209,85 +211,28 @@ export default function ARViewer() {
                 </div>
               )}
 
-              {/* model viewer with full controls( rotate, zoom, pan, shadows) */}
+              {/* model viewer */}
               {scriptReady && (
                 <model-viewer
                   src={glbUrl}
                   alt={art.title}
-
-                  /* AR settings */
                   ar=""
                   ar-modes="webxr scene-viewer quick-look"
                   ar-scale="auto"
-
-                  /* Camera controls: rotate, zoom, pan */
                   camera-controls=""
-                  touch-action="pan-y"
-                  interaction-prompt="auto"
-                  interaction-prompt-threshold="2000"
-                  interaction-prompt-style="wiggle"
-
-                  /* Zoom limits (pinch-to-zoom on mobile, scroll on PC) */
-                  min-camera-orbit="auto auto 5%"
-                  max-camera-orbit="auto auto 300%"
-                  camera-orbit="0deg 75deg 105%"
-
-                  /* Field of view (fine-grained pinch zoom) */
-                  field-of-view="30deg"
-                  min-field-of-view="10deg"
-                  max-field-of-view="45deg"
-
-                  /* Auto-rotate (pauses when user interacts) */
                   auto-rotate=""
-                  auto-rotate-delay="3000"
-                  rotation-per-second="15deg"
-
-                  /* shadows(realistic ground shadow) */
-                  shadow-intensity="1.5"
-                  shadow-softness="0.8"
-
-                  /* lighting & exposure */
+                  auto-rotate-delay="300"
+                  rotation-per-second="20deg"
+                  shadow-intensity="1"
                   environment-image="neutral"
-                  exposure="1.1"
-                  tone-mapping="neutral"
-
-                  /* Loading */
-                  loading="eager"
-                  reveal="auto"
-
+                  exposure="1"
                   style={{
                     width: '100%', height: '100%',
                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
                     background: 'transparent',
                     '--progress-bar-color': '#C97B5A',
-                    '--poster-color': 'transparent',
                   }}
                 >
-                  {/* Custom poster while model loads */}
-                  <div slot="poster" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100%',
-                    width: '100%',
-                    background: 'transparent',
-                  }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{
-                        width: 48, height: 48, borderRadius: 12,
-                        background: 'rgba(201,123,90,0.12)',
-                        border: '1px solid rgba(201,123,90,0.25)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        margin: '0 auto 12px',
-                      }}>
-                        <RiBox3Line size={22} style={{ color: '#C97B5A' }}/>
-                      </div>
-                      <p style={{ color: '#C4917A', fontSize: 12, margin: 0 }}>
-                        Preparing 3D model…
-                      </p>
-                    </div>
-                  </div>
-
                   {/* AR button */}
                   <button slot="ar-button"
                     className="font-body font-semibold"
@@ -319,12 +264,12 @@ export default function ARViewer() {
               )}
             </div>
 
-            {/* info strip*/}
+            {/* info strip */}
             <div className="flex-shrink-0 px-6 py-4 bg-[#1e1a17]/95 border-t border-[#C97B5A]/12">
               <div className="max-w-2xl mx-auto">
                 <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                   <h1 className="font-heading text-sm font-normal" style={{ color: "#F5EDE3" }}>{art.title}</h1>
-                  <div className="flex gap-4 text-[10px] font-body text-[#9A8880] flex-wrap">
+                  <div className="flex gap-4 text-[10px] font-body text-[#9A8880]">
                     <span className="flex items-center gap-1"><RiComputerLine size={11}/> Drag to rotate</span>
                     <span className="flex items-center gap-1"><RiSmartphoneLine size={11}/> Pinch to zoom</span>
                   </div>
@@ -351,7 +296,7 @@ export default function ARViewer() {
             </div>
           </>
         ) : (
-          /* no glb  fallback */
+          /*no glb fallback */
           <div className="flex-1 flex flex-col items-center justify-center p-8">
             {art.image ? (
               <div className="max-w-md w-full text-center">

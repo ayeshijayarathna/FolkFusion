@@ -16,10 +16,6 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
-      '/models': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
     },
   },
 })
