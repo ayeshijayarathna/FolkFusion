@@ -102,7 +102,7 @@ const Partnership = () => {
         <div
           className="absolute inset-0 opacity-80"
           style={{
-            backgroundImage: 'url("/images/partner.png")',
+            backgroundImage: 'url("/images/part.png")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -126,7 +126,7 @@ const Partnership = () => {
 
             <p
               className="font-body text-xl md:text-2xl font-bold mb-8 leading-relaxed"
-              style={{ color: 'rgba(255,255,255,0.90)' }}
+              style={{ color: 'rgba(92, 9, 9, 0.9)' }}
             >
               Join hands with provincial councils to preserve Sri Lanka's folk art heritage
             </p>
