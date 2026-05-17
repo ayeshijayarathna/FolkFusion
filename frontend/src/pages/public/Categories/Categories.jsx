@@ -5,7 +5,7 @@ import { artworkAPI } from '../../../services/api';
 
 const CATEGORY_DETAILS = {
   'Folk Mural Painting': {
-    image: '/images/trapainting.jpg',
+    image: '/images/heritage.jpg',
     description: 'Traditional Sri Lankan mural paintings adorning temple walls and ancient structures, depicting religious narratives, local folklore, and historical events through vibrant natural pigments.',
     history: 'Dating back to ancient kingdoms, folk mural painting flourished during the Anuradhapura and Polonnaruwa periods. These paintings served as visual storytelling tools, preserving Buddhist teachings and cultural heritage.',
     techniques: ['Natural pigment preparation', 'Wall surface treatment', 'Sketch outlining', 'Layer-by-layer coloring', 'Final detailing and preservation'],
@@ -13,7 +13,7 @@ const CATEGORY_DETAILS = {
     materials: 'Natural earth pigments, lime plaster, vegetable dyes, binding agents from plant resins',
   },
   'Pottery & Clay': {
-    image: '/images/pottery.jpg',
+    image: '/images/Neutral.jpg',
     description: 'Ancient Sri Lankan pottery traditions shaped by hand and fired in traditional kilns, producing functional earthenware and decorative pieces that have served communities for millennia.',
     history: 'Pottery in Sri Lanka dates back over 2,500 years, with archaeological evidence from Anuradhapura showing sophisticated pottery techniques. Village potters (kumbhal) have passed down their craft through generations.',
     techniques: ['Clay preparation and wedging', 'Hand-building or wheel-throwing', 'Surface decoration', 'Sun drying', 'Kiln firing at high temperatures'],
@@ -21,7 +21,7 @@ const CATEGORY_DETAILS = {
     materials: 'Local clay deposits, natural glazes, wood ash, mineral oxides for coloring',
   },
   'Traditional Masks': {
-    image: '/images/mask.jpg',
+    image: '/images/tmask.jpg',
     description: 'Ceremonial masks carved from kaduru wood, used in healing rituals, devil-dancing ceremonies, and traditional theater performances across Sri Lanka.',
     history: 'Mask-making tradition emerged from ancient exorcism rituals and folk healing practices. Each mask represents specific demons, animals, or characters from folklore, serving both spiritual and theatrical purposes.',
     techniques: ['Wood selection and seasoning', 'Carving with traditional chisels', 'Surface smoothing', 'Natural paint application', 'Final embellishment'],
@@ -29,7 +29,7 @@ const CATEGORY_DETAILS = {
     materials: 'Kaduru (Nux vomica) wood, natural dyes, paint pigments, varnish from tree resins',
   },
   'Handloom Saree': {
-    image: '/images/hadloom.jpg',
+    image: '/images/handloomS.jpg',
     description: 'Hand-woven silk and cotton sarees crafted on traditional wooden looms, celebrated for their intricate geometric patterns, vibrant colors, and rich cultural heritage.',
     history: 'Handloom weaving has been practiced in Sri Lanka for over 1,000 years. Royal patronage during the Kandyan Kingdom elevated it to a fine art, with specific patterns reserved for nobility.',
     techniques: ['Thread preparation and dyeing', 'Warp setting on loom', 'Pattern design planning', 'Shuttle weaving', 'Border and pallu creation'],
@@ -37,7 +37,7 @@ const CATEGORY_DETAILS = {
     materials: 'Cotton yarn, silk threads, natural dyes from plants and minerals, traditional wooden looms',
   },
   'Wood Carving': {
-    image: '/images/wood.jpg',
+    image: '/images/woodcraving.jpg',
     description: 'Masterful woodwork depicting mythological figures, floral patterns, and wildlife — a hallmark of Sri Lankan temple architecture and decorative arts.',
     history: 'Wood carving reached its zenith during the Kandyan period (1469-1815), adorning palaces, temples, and aristocratic homes. Master craftsmen created intricate panels telling stories from Buddhist Jataka tales.',
     techniques: ['Wood selection and preparation', 'Design sketching', 'Relief carving', 'Detailed sculpting', 'Polishing and finishing'],
@@ -77,7 +77,7 @@ const CATEGORY_DETAILS = {
     materials: 'Rattan cane, bamboo frames, natural varnishes, weaving tools',
   },
   'Statues': {
-    image: '/images/status.jpg',
+    image: '/images/stonestatus.jpg',
     description: 'Religious and decorative sculptures carved from stone, wood, or cast in bronze — representing Buddhist deities, mythological figures, and cultural icons.',
     history: 'Statue-making in Sri Lanka has ancient roots, with masterpieces like the Aukana Buddha (5th century) demonstrating advanced sculptural knowledge. Both religious and secular traditions continue today.',
     techniques: ['Material selection', 'Proportioning according to traditional canons', 'Rough shaping', 'Detail carving', 'Surface treatment and consecration'],
@@ -109,7 +109,7 @@ const CATEGORY_DETAILS = {
     materials: 'Stone, wood, metal, clay, modern casting materials, traditional and contemporary tools',
   },
   'Batik Clothing': {
-    image: '/images/batic.jpg',
+    image: '/images/batikclothing.jpg',
     description: 'Wax-resist dyed fabrics creating intricate patterns on cotton and silk garments, representing a fusion of Indonesian technique and Sri Lankan aesthetic.',
     history: 'Introduced in the 1960s, batik quickly became a signature Sri Lankan craft. Local artisans developed distinctive styles, incorporating traditional motifs and vibrant tropical colors.',
     techniques: ['Design sketching on fabric', 'Wax application with tjanting', 'Dye immersion', 'Wax removal', 'Multiple color layering'],
@@ -117,7 +117,7 @@ const CATEGORY_DETAILS = {
     materials: 'Cotton or silk fabric, beeswax, paraffin, fabric dyes, tjanting tools, stretching frames',
   },
   'Hana Fiber Crafts': {
-    image: '/images/hana.jpg',
+    image: '/images/hanacraft.jpg',
     description: 'Woven items created from hana (a type of reed), including mats, baskets, and decorative pieces showcasing intricate weaving patterns.',
     history: 'Hana weaving is a traditional village craft, with techniques passed through matrilineal lines. Each region developed signature patterns and color combinations.',
     techniques: ['Reed harvesting and preparation', 'Dyeing in natural colors', 'Pattern planning', 'Weaving on simple looms', 'Edge finishing'],
@@ -157,7 +157,7 @@ const CATEGORY_DETAILS = {
     materials: 'Wooden circular frame, goat hide, leather strips, decorative paint',
   },
   'Beeralu Lace': {
-    image: '/images/heritage2.png',
+    image: '/images/belalu.jpg',
     description: 'Delicate lace-making using traditional bobbin techniques, creating intricate patterns for clothing embellishments, decorative items, and ceremonial textiles.',
     history: "Introduced by Portuguese colonizers in the 16th century, Beeralu (bobbin lace) was adopted and refined by Sri Lankan artisans, particularly in southern coastal regions. Women's cooperatives have preserved this intricate craft.",
     techniques: ['Thread preparation and winding', 'Bobbin arrangement', 'Pattern pinning', 'Twisting and crossing threads', 'Edge finishing'],
@@ -165,7 +165,7 @@ const CATEGORY_DETAILS = {
     materials: 'Fine cotton or silk thread, wooden bobbins, lace pillows, pattern cards, pins',
   },
   'Sesath Craft': {
-    image: '/images/heritage2.png',
+    image: '/images/sesth.png',
     description: 'Traditional craft using sesath (a type of natural fiber), creating woven mats, baskets, and decorative items with distinctive regional patterns.',
     history: 'Sesath weaving has been practiced in rural communities for generations, with each village developing unique patterns. This sustainable craft utilizes locally harvested materials.',
     techniques: ['Fiber harvesting and drying', 'Splitting and sorting', 'Dyeing preparation', 'Weaving techniques', 'Pattern integration'],
@@ -173,7 +173,7 @@ const CATEGORY_DETAILS = {
     materials: 'Sesath fibers, natural dyes, simple weaving tools',
   },
   'Palm Leaf Craft': {
-    image: '/images/heritage2.png',
+    image: '/images/palm.jpg',
     description: 'Artworks and functional items created from palmyra and coconut palm leaves, including woven products, decorative pieces, and traditional roofing materials.',
     history: 'Palm leaf craft has ancient roots in Sri Lankan culture, with techniques used for everything from traditional manuscripts to household items. Each region developed specialized uses for palm materials.',
     techniques: ['Leaf selection and preparation', 'Weaving and plaiting', 'Natural dyeing', 'Structural assembly', 'Preservation treatment'],
@@ -181,7 +181,7 @@ const CATEGORY_DETAILS = {
     materials: 'Palmyra leaves, coconut fronds, natural dyes, binding materials',
   },
   'Ola Leaf Manuscripts': {
-    image: '/images/heritage2.png',
+    image: '/images/ola.jpg',
     description: "Sacred Buddhist texts and historical documents inscribed on dried palm leaves (ola), representing one of Sri Lanka's most important cultural preservation traditions.",
     history: 'Ola leaf manuscript writing dates back over 2,000 years in Sri Lanka. Monks and scribes used iron styluses to inscribe Pali texts, creating libraries of knowledge that survived for centuries.',
     techniques: ['Leaf preparation and curing', 'Stylus inscription', 'Soot application', 'Cleaning and polishing', 'Binding between wooden covers'],
@@ -189,7 +189,7 @@ const CATEGORY_DETAILS = {
     materials: 'Talipot palm leaves, iron styluses, soot, coconut oil, sandalwood covers',
   },
   'Calabash Art': {
-    image: '/images/heritage2.png',
+    image: '/images/Calabash.jpg',
     description: 'Decorative craft using dried calabash gourds, carved and painted to create containers, musical instruments, and ornamental pieces.',
     history: 'Calabash crafting has utilitarian and artistic roots in rural Sri Lanka. Farmers and artisans transformed these natural vessels into functional and decorative objects.',
     techniques: ['Gourd harvesting and drying', 'Carving and etching', 'Pyrography (burn designs)', 'Painting and decoration', 'Sealing and finishing'],
@@ -197,7 +197,7 @@ const CATEGORY_DETAILS = {
     materials: 'Calabash gourds, carving tools, natural paints, pyrography equipment, varnishes',
   },
   'Traditional Toy Making': {
-    image: '/images/heritage2.png',
+    image: '/images/toy.jpg',
     description: 'Handcrafted wooden toys, clay figures, and woven playthings that reflect Sri Lankan cultural themes and traditional design motifs.',
     history: 'Traditional toy making preserved cultural stories and taught children about their heritage. Artisans created toys from local materials, often depicting animals, folk characters, and daily life scenes.',
     techniques: ['Wood carving and shaping', 'Clay modeling', 'Natural painting', 'Jointed articulation', 'Finishing touches'],
@@ -205,7 +205,7 @@ const CATEGORY_DETAILS = {
     materials: 'Soft woods, clay, natural paints, simple tools, vegetable dyes',
   },
   'Horn Craft': {
-    image: '/images/heritage2.png',
+    image: '/images/horn.jpg',
     description: 'Skilled artistry working with animal horn to create combs, decorative items, jewelry, and functional objects with polished, translucent beauty.',
     history: 'Horn craft developed as artisans discovered methods to heat, shape, and polish buffalo and cattle horn. This craft produced both utilitarian items and luxury goods.',
     techniques: ['Horn selection and cleaning', 'Heat softening', 'Shaping and molding', 'Carving details', 'Polishing to transparency'],
@@ -650,18 +650,18 @@ const Categories = () => {
               <div className="hidden md:flex w-72 lg:w-80 flex-shrink-0 p-4 gap-2">
                 <div className="flex flex-col gap-2 flex-1">
                   <div className="flex-1 rounded-2xl overflow-hidden">
-                    <img src="/images/wood.jpg" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#5C3D2E'} />
+                    <img src="/images/pot.jpg" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#5C3D2E'} />
                   </div>
                   <div className="h-28 rounded-2xl overflow-hidden">
-                    <img src="/images/batic.jpg" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#7A4F35'} />
+                    <img src="/images/metalcraft.jpg" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#7A4F35'} />
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 w-28">
                   <div className="h-28 rounded-2xl overflow-hidden">
-                    <img src="/images/mask.jpg" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#4A3020'} />
+                    <img src="/images/sesth.png" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#4A3020'} />
                   </div>
                   <div className="flex-1 rounded-2xl overflow-hidden">
-                    <img src="/images/pottery.jpg" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#6B4530'} />
+                    <img src="/images/ds5.jpg" alt="" className="w-full h-full object-cover opacity-80" onError={e => e.target.parentElement.style.background='#6B4530'} />
                   </div>
                 </div>
               </div>
