@@ -32,7 +32,6 @@ A full-stack web application dedicated to preserving and promoting Sri Lankan tr
 - [Authentication & Roles](#authentication--roles)
 - [Frontend Pages](#frontend-pages)
 - [Database Models](#database-models)
-- [Seed Data](#seed-data)
 - [Key Features Deep Dive](#key-features-deep-dive)
 - [Scripts](#scripts)
 
@@ -429,34 +428,6 @@ SuperAdmin (platform-wide)
 | **TraditionalPattern** | Traditional art patterns — image, description, order |
 | **LearningUser** | Learning platform user — progress tracking per category |
 | **Review** | Learning platform review — rating, status (pending/approved/rejected) |
-
----
-
-## Seed Data
-
-The `seedAll.js` script populates the database with comprehensive mock data:
-
-| Collection | Count | Description |
-|---|---|---|
-| Users | 24 | SuperAdmin + 9 Admins + 14 Artists |
-| Artists | 14 | Across all 9 provinces |
-| Artworks | 20 | 26+ folk art categories |
-| MarketplaceItems | 11 | With shipping and stock data |
-| Sales | 15 | Various order statuses |
-| Payments | 10 | Stripe-tracked transactions |
-| Donations | 8 | Different purposes and provinces |
-| Events | 5 | Workshops, exhibitions, festivals |
-| Courses | 5 | Multi-level, multi-province |
-| News | 5 | Announcements, exhibitions, achievements |
-| Reviews | 5 | Learning platform feedback |
-| Inquiries | 3 | Public and artist inquiries |
-| Notifications | 10 | Various notification types |
-| HistoricalPlaces | 5 | Heritage sites across provinces |
-| LearningContent | 28 | All folk art categories |
-| TraditionalPatterns | 5 | Classic Sinhalese patterns |
-| LearningUsers | 3 | Learner profiles with progress |
-| ARArtworks | 3 | 3D model entries |
-
 ---
 
 ## Key Features Deep Dive
