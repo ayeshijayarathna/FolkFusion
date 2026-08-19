@@ -41,3 +41,6 @@ ngrok
 
 # GLB models
 backend/public/models/
+
+# Docker
+docker-compose.override.yml
